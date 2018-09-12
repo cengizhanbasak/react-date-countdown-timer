@@ -8,6 +8,10 @@ module.exports = {
   },
   module: {
     rules: [
+        {
+          test: /\.css$/,
+          use: [ 'style-loader', 'css-loader' ]
+      },
       {
         test: /\.js$/,
         include: path.resolve(__dirname, 'src'),
@@ -20,11 +24,7 @@ module.exports = {
           }
         }
       }
-      ,
-      {
-        test: /\.css$/,
-        use: [ 'css-loader' ]
-      }
+
     ]
   },
   externals: {
