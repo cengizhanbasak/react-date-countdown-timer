@@ -1,0 +1,30 @@
+{
+  "name": "react-date-countdown-timer",
+  "version": "1.0.0",
+  "description": "Date countdown timer component with a cool animaton for react.js",
+  "main": "src/index.js",
+  "publishConfig": {
+    "access": "restricted"
+  },
+  "keywords": [
+      "react",
+      "react-date-countdown",
+      "react-timer",
+      "date-countdown",
+      "countdown"
+  ],
+  "scripts": {},
+  "peerDependencies": {
+    "react": "^16.4.2",
+    "react-dom": "^16.4.2"
+  },
+  "devDependencies": {
+    "react": "^16.4.2",
+    "react-dom": "^16.4.2"
+  },
+  "author": {
+    "name": "Tosunami",
+    "email": "cengizhanbasakk@gmail.com"
+  },
+  "license": "ISC"
+}
