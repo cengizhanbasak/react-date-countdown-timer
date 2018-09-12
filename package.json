@@ -7,23 +7,30 @@
     "access": "restricted"
   },
   "keywords": [
-      "react",
-      "react-date-countdown",
-      "react-timer",
-      "date-countdown",
-      "countdown"
+    "react",
+    "react-date-countdown",
+    "react-timer",
+    "date-countdown",
+    "countdown"
   ],
   "scripts": {},
   "dependencies": {
-      "webpack": "^2.6.1"
+    "react": "^16.4.2"
   },
   "peerDependencies": {
     "react": "^16.4.2",
     "react-dom": "^16.4.2"
   },
   "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.3",
+    "babel-loader": "^8.0.2",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
+    "babel-plugin-transform-react-jsx": "^6.24.1",
+    "babel-preset-env": "^1.7.0",
     "react": "^16.4.2",
-    "react-dom": "^16.4.2"
+    "react-dom": "^16.4.2",
+    "webpack": "^2.6.1"
   },
   "author": {
     "name": "Tosunami",
