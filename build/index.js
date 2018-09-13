@@ -64,7 +64,7 @@ module.exports =
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 3);
+/******/ 	return __webpack_require__(__webpack_require__.s = 5);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -280,6 +280,97 @@ module.exports = ReactPropTypesSecret;
 /* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
+/* WEBPACK VAR INJECTION */(function(process) {/**
+ * Copyright (c) 2013-present, Facebook, Inc.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
+if (process.env.NODE_ENV !== 'production') {
+  var REACT_ELEMENT_TYPE = (typeof Symbol === 'function' &&
+    Symbol.for &&
+    Symbol.for('react.element')) ||
+    0xeac7;
+
+  var isValidElement = function(object) {
+    return typeof object === 'object' &&
+      object !== null &&
+      object.$$typeof === REACT_ELEMENT_TYPE;
+  };
+
+  // By explicitly using `prop-types` you are opting into new development behavior.
+  // http://fb.me/prop-types-in-prod
+  var throwOnDirectAccess = true;
+  module.exports = __webpack_require__(11)(isValidElement, throwOnDirectAccess);
+} else {
+  // By explicitly using `prop-types` you are opting into new production behavior.
+  // http://fb.me/prop-types-in-prod
+  module.exports = __webpack_require__(10)();
+}
+
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
+
+var content = __webpack_require__(6);
+
+if(typeof content === 'string') content = [[module.i, content, '']];
+
+var transform;
+var insertInto;
+
+
+
+var options = {"hmr":true}
+
+options.transform = transform
+options.insertInto = undefined;
+
+var update = __webpack_require__(12)(content, options);
+
+if(content.locals) module.exports = content.locals;
+
+if(false) {
+	module.hot.accept("!!../node_modules/css-loader/index.js!./style.css", function() {
+		var newContent = require("!!../node_modules/css-loader/index.js!./style.css");
+
+		if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+
+		var locals = (function(a, b) {
+			var key, idx = 0;
+
+			for(key in a) {
+				if(!b || a[key] !== b[key]) return false;
+				idx++;
+			}
+
+			for(key in b) idx--;
+
+			return idx === 0;
+		}(content.locals, newContent.locals));
+
+		if(!locals) throw new Error('Aborting CSS HMR due to changed css-modules locals.');
+
+		update(newContent);
+	});
+
+	module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 4 */
+/***/ (function(module, exports) {
+
+module.exports = require("react");
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports, __webpack_require__) {
+
 "use strict";
 
 
@@ -289,15 +380,15 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _react = __webpack_require__(14);
+var _react = __webpack_require__(4);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _propTypes = __webpack_require__(10);
+var _propTypes = __webpack_require__(2);
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
-__webpack_require__(11);
+__webpack_require__(3);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -307,101 +398,218 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
+var calculateStateFromProps = function calculateStateFromProps(props) {
+    var dateTo = props.dateTo,
+        numberOfFigures = props.numberOfFigures,
+        mostSignificantFigure = props.mostSignificantFigure;
+
+    var currentDate = new Date();
+    var targetDate = new Date(dateTo);
+    var diff = targetDate - currentDate;
+    var significance = ['year', 'month', 'day', 'hour', 'min', 'sec'];
+
+    var year = Math.floor(diff / 31104000000); // time diff in years
+    var month = Math.floor(diff / 2592000000 % 12); // time diff in months (modulated to 12)
+    var day = Math.floor(diff / 86400000 % 30); // time diff in days (modulated to 30)
+    var hour = Math.floor(diff / 3600000 % 24); // time diff's hours (modulated to 24)
+    var min = Math.floor(diff / 60000 % 60); // time diff's minutes (modulated to 60)
+    var sec = Math.floor(diff / 1000 % 60); // time diff's seconds (modulated to 60)
+
+    if (mostSignificantFigure === 'none') {
+        if (year === 0) {
+            significance = significance.slice(1);
+            if (month === 0) {
+                significance = significance.slice(1);
+                if (day === 0) {
+                    significance = significance.slice(1);
+                    if (hour === 0) {
+                        significance = significance.slice(1);
+                        if (min === 0) {
+                            significance = significance.slice(1);
+                        }
+                    }
+                }
+            }
+        }
+    } else {
+        significance = significance.slice(significance.indexOf(mostSignificantFigure));
+    }
+    significance = significance.slice(0, numberOfFigures);
+
+    if (significance.indexOf('year') === -1) {
+        month += year * 12;
+        year = 0;
+    }
+    if (significance.indexOf('month') === -1) {
+        day += month * 30;
+        month = 0;
+    }
+    if (significance.indexOf('day') === -1) {
+        hour += day * 24;
+        day = 0;
+    }
+    if (significance.indexOf('hour') === -1) {
+        min += hour * 60;
+        hour = 0;
+    }
+    if (significance.indexOf('min') === -1) {
+        sec += min * 60;
+        min = 0;
+    }
+    if (diff <= 0) props.callback();
+    return {
+        speed: 250,
+        diff: diff,
+        significance: significance,
+        year: year,
+        month: month,
+        day: day,
+        hour: hour,
+        min: min,
+        sec: sec
+    };
+};
+
 var DateCountdown = function (_Component) {
     _inherits(DateCountdown, _Component);
 
-    function DateCountdown(props) {
+    function DateCountdown() {
+        var _ref;
+
+        var _temp, _this, _ret;
+
         _classCallCheck(this, DateCountdown);
 
-        var _this = _possibleConstructorReturn(this, (DateCountdown.__proto__ || Object.getPrototypeOf(DateCountdown)).call(this, props));
+        for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+            args[_key] = arguments[_key];
+        }
 
-        _initialiseProps.call(_this);
+        return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = DateCountdown.__proto__ || Object.getPrototypeOf(DateCountdown)).call.apply(_ref, [this].concat(args))), _this), _this.animateAndChangeIfNeeded = function (unit, prevUnit) {
+            var _this$state = _this.state,
+                speed = _this$state.speed,
+                significance = _this$state.significance;
 
-        var _this$props = _this.props,
-            dateTo = _this$props.dateTo,
-            numberOfFigures = _this$props.numberOfFigures,
-            mostSignificantFigure = _this$props.mostSignificantFigure;
 
-        var currentDate = new Date();
-        var targetDate = new Date(dateTo);
-        var diff = targetDate - currentDate;
-        var significance = ['year', 'month', 'day', 'hour', 'min', 'sec'];
+            if (significance.indexOf(unit) !== -1) {
+                (function () {
+                    var unitSpan = document.getElementsByClassName(unit)[0];
+                    var digits = unitSpan.children;
 
-        var year = Math.floor(diff / 31104000000); // time diff in years
-        var month = Math.floor(diff / 2592000000 % 12); // time diff in months (modulated to 12)
-        var day = Math.floor(diff / 86400000 % 30); // time diff in days (modulated to 30)
-        var hour = Math.floor(diff / 3600000 % 24); // time diff's hours (modulated to 24)
-        var min = Math.floor(diff / 60000 % 60); // time diff's minutes (modulated to 60)
-        var sec = Math.floor(diff / 1000 % 60); // time diff's seconds (modulated to 60)
+                    var _loop = function _loop(i) {
 
-        if (mostSignificantFigure === 'none') {
-            if (year === 0) {
-                significance = significance.slice(1);
-                if (month === 0) {
-                    significance = significance.slice(1);
-                    if (day === 0) {
-                        significance = significance.slice(1);
-                        if (hour === 0) {
-                            significance = significance.slice(1);
-                            if (min === 0) {
-                                significance = significance.slice(1);
+                        if (i === digits.length - 1) {
+                            setTimeout(function () {
+                                digits[i].classList.add('odometerEnd');
+                                setTimeout(function () {
+                                    digits[i].classList.remove('odometerEnd');
+                                    digits[i].classList.add('odometerStart');
+                                    if (prevUnit !== 'none') {
+                                        var newState = {};
+                                        newState[prevUnit] = 59;
+                                        newState[unit] = _this.state[unit] - 1;
+                                        _this.setState(newState);
+                                    }
+                                    setTimeout(function () {
+                                        return digits[i].classList.remove('odometerStart');
+                                    }, speed);
+                                }, speed);
+                            }, 1000 - speed);
+                        } else {
+                            var allZeros = true;
+                            for (var j = i + 1; j < digits.length; j++) {
+                                if (digits[j].innerHTML === '0') {
+                                    allZeros = true;
+                                } else {
+                                    allZeros = false;
+                                    break;
+                                }
+                            }
+                            if (allZeros) {
+                                setTimeout(function () {
+                                    digits[i].classList.add('odometerEnd');
+                                    setTimeout(function () {
+                                        digits[i].classList.remove('odometerEnd');
+                                        digits[i].classList.add('odometerStart');
+                                        if (prevUnit !== 'none') {
+                                            var newState = {};
+                                            newState[prevUnit] = 59;
+                                            newState[unit] = _this.state[unit] - 1;
+                                            _this.setState(newState);
+                                        }
+                                        setTimeout(function () {
+                                            return digits[i].classList.remove('odometerStart');
+                                        }, speed);
+                                    }, speed);
+                                }, 1000 - speed);
+                            }
+                        }
+                    };
+
+                    for (var i = 0; i < digits.length; i++) {
+                        _loop(i);
+                    }
+                })();
+            }
+        }, _this.tick = function () {
+            _this.setState({ sec: _this.state.sec - 1 });
+            _this.animateAndChangeIfNeeded('sec', 'none');
+
+            if (_this.state.sec === 0) {
+                _this.animateAndChangeIfNeeded('min', 'sec');
+
+                if (_this.state.min === 0) {
+                    _this.animateAndChangeIfNeeded('hour', 'min');
+
+                    if (_this.state.hour === 0) {
+                        _this.animateAndChangeIfNeeded('day', 'hour');
+
+                        if (_this.state.day === 0) {
+                            _this.animateAndChangeIfNeeded('month', 'day');
+
+                            if (_this.state.month === 0) {
+                                _this.animateAndChangeIfNeeded('year', 'month');
                             }
                         }
                     }
                 }
             }
-        } else {
-            significance = significance.slice(significance.indexOf(mostSignificantFigure));
-        }
-        significance = significance.slice(0, numberOfFigures);
 
-        if (significance.indexOf('year') === -1) {
-            month += year * 12;
-            year = 0;
-        }
-        if (significance.indexOf('month') === -1) {
-            day += month * 30;
-            month = 0;
-        }
-        if (significance.indexOf('day') === -1) {
-            hour += day * 24;
-            day = 0;
-        }
-        if (significance.indexOf('hour') === -1) {
-            min += hour * 60;
-            hour = 0;
-        }
-        if (significance.indexOf('min') === -1) {
-            sec += min * 60;
-            min = 0;
-        }
-        if (diff <= 0) _this.props.callback();
-        _this.state = {
-            speed: 250,
-            diff: diff,
-            significance: significance,
-            year: year,
-            month: month,
-            day: day,
-            hour: hour,
-            min: min,
-            sec: sec
-        };
-        return _this;
+            if (_this.state.sec === 0 && _this.state.min === 0 && _this.state.hour === 0 && _this.state.day === 0 && _this.state.month === 0 && _this.state.year === 0) {
+                _this.setState({ diff: -1 });
+                clearInterval(_this.state.tickId);
+                _this.props.callback();
+            }
+        }, _this.dissect = function (value, unit) {
+            var valStr = Number(value).toString();
+            if (valStr.length === 1) {
+                valStr = '0' + valStr;
+            }
+            return valStr.split('').map(function (digit, key) {
+                return _react2.default.createElement(
+                    'span',
+                    { key: key, className: key },
+                    digit
+                );
+            });
+        }, _temp), _possibleConstructorReturn(_this, _ret);
     }
 
     _createClass(DateCountdown, [{
         key: 'componentDidMount',
         value: function componentDidMount() {
-            if (this.state.diff > 0) {
-                var tickId = setInterval(this.tick, 1000);
-                this.setState({ tickId: tickId });
-            }
+            var _this2 = this;
+
+            this.setState(calculateStateFromProps(this.props), function () {
+                if (_this2.state.diff > 0) {
+                    var tickId = setInterval(_this2.tick, 1000);
+                    _this2.setState({ tickId: tickId });
+                }
+            });
         }
     }, {
         key: 'render',
         value: function render() {
-            var _this2 = this;
+            var _this3 = this;
 
             var significance = this.state.significance;
             var locales = this.props.locales;
@@ -438,11 +646,11 @@ var DateCountdown = function (_Component) {
                                 _react2.default.createElement(
                                     'span',
                                     { className: '' + unit },
-                                    _this2.dissect(_this2.state[unit], unit)
+                                    _this3.dissect(_this3.state[unit], unit)
                                 ),
                                 ' ',
                                 locales[key],
-                                _this2.state[unit] > 1 && 's',
+                                _this3.state[unit] > 1 && 's',
                                 ' '
                             );
                         } else return null;
@@ -450,125 +658,19 @@ var DateCountdown = function (_Component) {
                 );
             }
         }
+    }], [{
+        key: 'getDerivedStateFromProps',
+        value: function getDerivedStateFromProps(props, state) {
+            var newState = calculateStateFromProps(props);
+            return newState;
+        }
     }]);
 
     return DateCountdown;
 }(_react.Component);
 
-var _initialiseProps = function _initialiseProps() {
-    var _this3 = this;
-
-    this.animateAndChangeIfNeeded = function (unit, prevUnit) {
-        var _state = _this3.state,
-            speed = _state.speed,
-            significance = _state.significance;
-
-
-        if (significance.indexOf(unit) !== -1) {
-            (function () {
-                var unitSpan = document.getElementsByClassName(unit)[0];
-                var digits = unitSpan.children;
-
-                var _loop = function _loop(i) {
-
-                    if (i === digits.length - 1) {
-                        setTimeout(function () {
-                            digits[i].classList.add('odometerEnd');
-                            setTimeout(function () {
-                                digits[i].classList.remove('odometerEnd');
-                                digits[i].classList.add('odometerStart');
-                                if (prevUnit !== 'none') {
-                                    var newState = {};
-                                    newState[prevUnit] = 59;
-                                    newState[unit] = _this3.state[unit] - 1;
-                                    _this3.setState(newState);
-                                }
-                            }, speed);
-                        }, 1000 - speed);
-                    } else {
-                        var allZeros = true;
-                        for (var j = i + 1; j < digits.length; j++) {
-                            if (digits[j].innerHTML === '0') {
-                                allZeros = true;
-                            } else {
-                                allZeros = false;
-                                break;
-                            }
-                        }
-                        if (allZeros) {
-                            setTimeout(function () {
-                                digits[i].classList.add('odometerEnd');
-                                setTimeout(function () {
-                                    digits[i].classList.remove('odometerEnd');
-                                    digits[i].classList.add('odometerStart');
-                                    if (prevUnit !== 'none') {
-                                        var newState = {};
-                                        newState[prevUnit] = 59;
-                                        newState[unit] = _this3.state[unit] - 1;
-                                        _this3.setState(newState);
-                                    }
-                                }, speed);
-                            }, 1000 - speed);
-                        }
-                    }
-                };
-
-                for (var i = 0; i < digits.length; i++) {
-                    _loop(i);
-                }
-            })();
-        }
-    };
-
-    this.tick = function () {
-        _this3.setState({ sec: _this3.state.sec - 1 });
-        _this3.animateAndChangeIfNeeded('sec', 'none');
-
-        if (_this3.state.sec === 0) {
-            _this3.animateAndChangeIfNeeded('min', 'sec');
-
-            if (_this3.state.min === 0) {
-                _this3.animateAndChangeIfNeeded('hour', 'min');
-
-                if (_this3.state.hour === 0) {
-                    _this3.animateAndChangeIfNeeded('day', 'hour');
-
-                    if (_this3.state.day === 0) {
-                        _this3.animateAndChangeIfNeeded('month', 'day');
-
-                        if (_this3.state.month === 0) {
-                            _this3.animateAndChangeIfNeeded('year', 'month');
-                        }
-                    }
-                }
-            }
-        }
-
-        if (_this3.state.sec === 0 && _this3.state.min === 0 && _this3.state.hour === 0 && _this3.state.day === 0 && _this3.state.month === 0 && _this3.state.year === 0) {
-            _this3.setState({ diff: -1 });
-            clearInterval(_this3.state.tickId);
-            _this3.props.callback();
-        }
-    };
-
-    this.dissect = function (value, unit) {
-        var valStr = Number(value).toString();
-        if (valStr.length === 1) {
-            valStr = '0' + valStr;
-        }
-        return valStr.split('').map(function (digit, key) {
-            return _react2.default.createElement(
-                'span',
-                { key: key, className: key },
-                digit
-            );
-        });
-    };
-};
-
 DateCountdown.propTypes = {
     locales: _propTypes2.default.array,
-    dateFrom: _propTypes2.default.string,
     dateTo: _propTypes2.default.string.isRequired,
     callback: _propTypes2.default.func,
     mostSignificantFigure: _propTypes2.default.string,
@@ -578,7 +680,6 @@ DateCountdown.propTypes = {
 DateCountdown.defaultProps = {
     locales: ['year', 'month', 'day', 'hour', 'minute', 'second'],
     dateTo: new Date().toString(),
-    dateFrom: new Date().toString(),
     callback: function callback() {
         return null;
     },
@@ -589,22 +690,10 @@ DateCountdown.defaultProps = {
 exports.default = DateCountdown;
 
 /***/ }),
-/* 3 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__src__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__src___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__src__);
-
-/* harmony default export */ __webpack_exports__["default"] = (__WEBPACK_IMPORTED_MODULE_0__src___default.a);
-
-
-/***/ }),
-/* 4 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(5)(false);
+exports = module.exports = __webpack_require__(7)(false);
 // imports
 
 
@@ -615,7 +704,7 @@ exports.push([module.i, "\n\n@keyframes moveup {\n    0%   {opacity: 0; transfor
 
 
 /***/ }),
-/* 5 */
+/* 7 */
 /***/ (function(module, exports) {
 
 /*
@@ -697,7 +786,7 @@ function toComment(sourceMap) {
 
 
 /***/ }),
-/* 6 */
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -794,7 +883,7 @@ module.exports = shouldUseNative() ? Object.assign : function (target, source) {
 
 
 /***/ }),
-/* 7 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -893,7 +982,7 @@ module.exports = checkPropTypes;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 8 */
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -959,7 +1048,7 @@ module.exports = function() {
 
 
 /***/ }),
-/* 9 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -972,10 +1061,10 @@ module.exports = function() {
 
 
 
-var assign = __webpack_require__(6);
+var assign = __webpack_require__(8);
 
 var ReactPropTypesSecret = __webpack_require__(1);
-var checkPropTypes = __webpack_require__(7);
+var checkPropTypes = __webpack_require__(9);
 
 var printWarning = function() {};
 
@@ -1522,91 +1611,6 @@ module.exports = function(isValidElement, throwOnDirectAccess) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 10 */
-/***/ (function(module, exports, __webpack_require__) {
-
-/* WEBPACK VAR INJECTION */(function(process) {/**
- * Copyright (c) 2013-present, Facebook, Inc.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- */
-
-if (process.env.NODE_ENV !== 'production') {
-  var REACT_ELEMENT_TYPE = (typeof Symbol === 'function' &&
-    Symbol.for &&
-    Symbol.for('react.element')) ||
-    0xeac7;
-
-  var isValidElement = function(object) {
-    return typeof object === 'object' &&
-      object !== null &&
-      object.$$typeof === REACT_ELEMENT_TYPE;
-  };
-
-  // By explicitly using `prop-types` you are opting into new development behavior.
-  // http://fb.me/prop-types-in-prod
-  var throwOnDirectAccess = true;
-  module.exports = __webpack_require__(9)(isValidElement, throwOnDirectAccess);
-} else {
-  // By explicitly using `prop-types` you are opting into new production behavior.
-  // http://fb.me/prop-types-in-prod
-  module.exports = __webpack_require__(8)();
-}
-
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
-
-/***/ }),
-/* 11 */
-/***/ (function(module, exports, __webpack_require__) {
-
-
-var content = __webpack_require__(4);
-
-if(typeof content === 'string') content = [[module.i, content, '']];
-
-var transform;
-var insertInto;
-
-
-
-var options = {"hmr":true}
-
-options.transform = transform
-options.insertInto = undefined;
-
-var update = __webpack_require__(12)(content, options);
-
-if(content.locals) module.exports = content.locals;
-
-if(false) {
-	module.hot.accept("!!../node_modules/css-loader/index.js!./style.css", function() {
-		var newContent = require("!!../node_modules/css-loader/index.js!./style.css");
-
-		if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-
-		var locals = (function(a, b) {
-			var key, idx = 0;
-
-			for(key in a) {
-				if(!b || a[key] !== b[key]) return false;
-				idx++;
-			}
-
-			for(key in b) idx--;
-
-			return idx === 0;
-		}(content.locals, newContent.locals));
-
-		if(!locals) throw new Error('Aborting CSS HMR due to changed css-modules locals.');
-
-		update(newContent);
-	});
-
-	module.hot.dispose(function() { update(); });
-}
-
-/***/ }),
 /* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -2104,12 +2108,6 @@ module.exports = function (css) {
 	return fixedCss;
 };
 
-
-/***/ }),
-/* 14 */
-/***/ (function(module, exports) {
-
-module.exports = require("react");
 
 /***/ })
 /******/ ]);
