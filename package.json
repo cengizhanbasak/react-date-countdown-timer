@@ -3,9 +3,6 @@
   "version": "1.0.0",
   "description": "Date countdown timer component with a cool animaton for react.js",
   "main": "build/index.js",
-  "publishConfig": {
-    "access": "restricted"
-  },
   "keywords": [
     "react",
     "react-date-countdown",
@@ -35,7 +32,7 @@
   },
   "author": {
     "name": "Tosunami",
-    "email": "cengizhanbasakk@gmail.com"
+    "email": "tosunami@protonmail.com"
   },
   "license": "ISC"
 }
