@@ -1,5 +1,10 @@
 ﻿# react-date-countdown-timer
 A basic react countdown timer component with a cool CSS transition animation.
+
+[![npm version](https://badge.fury.io/js/react-date-countdown-timer.svg)](https://badge.fury.io/js/react-date-countdown-timer)
+
+You can see a demo from [here](https://react-date-countdown-timer-dem.herokuapp.com/)
+
 ## Installation
 > npm install --save react-date-countdown-timer
 ## Usage
