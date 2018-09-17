@@ -189,9 +189,10 @@ class DateCountdown extends Component {
 
     render(){
         let { significance } = this.state;
-        let { locales } = this.props;
+        let { locales, locales-plural } = this.props;
+        let units = ['year','month','day','hour','min','sec'];
+
         if(this.state.diff < 0){ // past date
-            let units = ['year','month','day','hour','min','sec'];
             return (
                 <span className="odometer-block">
                     {
@@ -205,14 +206,12 @@ class DateCountdown extends Component {
             )
         }
         else{
-            let units = ['year','month','day','hour','min','sec'];
-
             return (
                 <span className="odometer-block">
                     { units.map((unit,key)=>{
                         if(significance.indexOf(unit) !== -1)
                         {
-                            return (<span key={key}><span className={`${unit}`} >{this.dissect(this.state[unit],unit)}</span> {locales[key]}{this.state[unit]>1 && 's'}{` `}</span>);
+                            return (<span key={key}><span className={`${unit}`} >{this.dissect(this.state[unit],unit)}</span> {this.state[unit]<=1 && locales[key]}{this.state[unit]>1 && locales-plural[key]}{` `}</span>);
                         }
                         else return null;
                     })}
@@ -224,6 +223,7 @@ class DateCountdown extends Component {
 
 DateCountdown.propTypes = {
     locales: PropTypes.array,
+    locales-plural: PropTypes.array,
     dateTo: PropTypes.string.isRequired,
     callback: PropTypes.func,
     mostSignificantFigure: PropTypes.string,
@@ -232,6 +232,7 @@ DateCountdown.propTypes = {
 
 DateCountdown.defaultProps = {
     locales: ['year','month','day','hour','minute','second'],
+    locales-plural: ['years','months','days','hours','minutes','seconds'],
     dateTo: (new Date()).toString(),
     callback: ()=>null,
     mostSignificantFigure: 'none',

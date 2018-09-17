@@ -22,6 +22,8 @@ return <DateCountdown dateTo='2023-01-01 00:00:00 GMT+0300' callback={()=>alert(
 * mostSignificantFigure(string): most significant figure to show about the remaining time (default 'none')
 * numberOfFigures(number): number of figures to show from mostSignificantFigure (default 6)
 * locales(array(string)): locales strings for units (default ['year','month','day','hour','minute','second'])
+* locales-plural(array(string)): locales strings for units' plural form (default ['years','months','days','hours','minutes','seconds'])
+
 
 mostSignificantFigure can be one of these values:
 * year
