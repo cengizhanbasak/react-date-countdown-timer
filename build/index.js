@@ -415,7 +415,6 @@ var calculateStateFromProps = function calculateStateFromProps(props) {
     var min = Math.floor(diff / 60000 % 60); // time diff's minutes (modulated to 60)
     var sec = Math.floor(diff / 1000 % 60); // time diff's seconds (modulated to 60)
 
-    var timeoutList = [];
 
     if (mostSignificantFigure === 'none') {
         if (year === 0) {
@@ -500,9 +499,9 @@ var DateCountdown = function (_Component) {
                     var _loop = function _loop(i) {
 
                         if (i === digits.length - 1) {
-                            _this.timeoutList.push(setTimeout(function () {
+                            setTimeout(function () {
                                 digits[i].classList.toggle('odometerEnd');
-                                _this.timeoutList.push(setTimeout(function () {
+                                setTimeout(function () {
                                     digits[i].classList.toggle('odometerEnd');
                                     digits[i].classList.toggle('odometerStart');
                                     if (prevUnit !== 'none') {
@@ -511,11 +510,11 @@ var DateCountdown = function (_Component) {
                                         newState[unit] = _this.state[unit] - 1;
                                         _this.setState(newState);
                                     }
-                                    _this.timeoutList.push(setTimeout(function () {
+                                    setTimeout(function () {
                                         return digits[i].classList.toggle('odometerStart');
-                                    }, speed));
-                                }, speed));
-                            }, 1000 - speed));
+                                    }, speed);
+                                }, speed);
+                            }, 1000 - speed);
                         } else {
                             var allZeros = true;
                             for (var j = i + 1; j < digits.length; j++) {
@@ -527,9 +526,9 @@ var DateCountdown = function (_Component) {
                                 }
                             }
                             if (allZeros) {
-                                _this.timeoutList.push(setTimeout(function () {
+                                setTimeout(function () {
                                     digits[i].classList.toggle('odometerEnd');
-                                    _this.timeoutList.push(setTimeout(function () {
+                                    setTimeout(function () {
                                         digits[i].classList.toggle('odometerEnd');
                                         digits[i].classList.toggle('odometerStart');
                                         if (prevUnit !== 'none') {
@@ -538,11 +537,11 @@ var DateCountdown = function (_Component) {
                                             newState[unit] = _this.state[unit] - 1;
                                             _this.setState(newState);
                                         }
-                                        _this.timeoutList.push(setTimeout(function () {
+                                        setTimeout(function () {
                                             return digits[i].classList.toggle('odometerStart');
-                                        }, speed));
-                                    }, speed));
-                                }, 1000 - speed));
+                                        }, speed);
+                                    }, speed);
+                                }, 1000 - speed);
                             }
                         }
                     };
@@ -612,9 +611,6 @@ var DateCountdown = function (_Component) {
         key: 'componentWillUnmount',
         value: function componentWillUnmount() {
             clearInterval(this.state.tickId);
-            timeoutList.forEach(function (x) {
-                clearTimeout(x);
-            });
         }
     }, {
         key: 'render',

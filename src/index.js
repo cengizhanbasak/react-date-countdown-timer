@@ -16,7 +16,6 @@ const calculateStateFromProps = (props) => {
     let min= Math.floor((diff/60000)%60); // time diff's minutes (modulated to 60)
     let sec= Math.floor((diff/1000)%60); // time diff's seconds (modulated to 60)
 
-    var timeoutList = [];
 
     if(mostSignificantFigure === 'none'){
         if(year === 0){
@@ -93,9 +92,6 @@ class DateCountdown extends Component {
 
     componentWillUnmount(){
         clearInterval(this.state.tickId)
-        timeoutList.forEach(x=>{
-            clearTimeout(x);
-        })
     }
 
 
@@ -108,9 +104,9 @@ class DateCountdown extends Component {
             for(let i = 0; i < digits.length; i++){
 
                 if(i === digits.length-1){
-                    this.timeoutList.push(setTimeout(()=>{
+                    setTimeout(()=>{
                         digits[i].classList.toggle('odometerEnd');
-                        this.timeoutList.push(setTimeout(()=> {
+                        setTimeout(()=> {
                             digits[i].classList.toggle('odometerEnd')
                             digits[i].classList.toggle('odometerStart')
                             if(prevUnit!=='none'){
@@ -119,10 +115,10 @@ class DateCountdown extends Component {
                                 newState[unit]=this.state[unit]-1;
                                 this.setState(newState);
                             }
-                            this.timeoutList.push(setTimeout(()=>digits[i].classList.toggle('odometerStart'),speed));
+                            setTimeout(()=>digits[i].classList.toggle('odometerStart'),speed);
 
-                        },speed));
-                    },1000-speed))
+                        },speed);
+                    },1000-speed)
                 }else{
                     let allZeros = true;
                     for(let j = i+1; j < digits.length; j++){
@@ -134,9 +130,9 @@ class DateCountdown extends Component {
                         }
                     }
                     if(allZeros){
-                        this.timeoutList.push(setTimeout(()=>{
+                        setTimeout(()=>{
                             digits[i].classList.toggle('odometerEnd');
-                            this.timeoutList.push(setTimeout(()=> {
+                            setTimeout(()=> {
                                 digits[i].classList.toggle('odometerEnd')
                                 digits[i].classList.toggle('odometerStart')
                                 if(prevUnit!=='none'){
@@ -145,9 +141,9 @@ class DateCountdown extends Component {
                                     newState[unit]=this.state[unit]-1;
                                     this.setState(newState);
                                 }
-                                this.timeoutList.push(setTimeout(()=>digits[i].classList.toggle('odometerStart'),speed));
-                            },speed));
-                        },1000-speed))
+                                setTimeout(()=>digits[i].classList.toggle('odometerStart'),speed);
+                            },speed);
+                        },1000-speed)
                     }
                 }
 
