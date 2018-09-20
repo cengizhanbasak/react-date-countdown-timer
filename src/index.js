@@ -16,6 +16,8 @@ const calculateStateFromProps = (props) => {
     let min= Math.floor((diff/60000)%60); // time diff's minutes (modulated to 60)
     let sec= Math.floor((diff/1000)%60); // time diff's seconds (modulated to 60)
 
+    var timeoutList = [];
+
     if(mostSignificantFigure === 'none'){
         if(year === 0){
             significance=significance.slice(1);
@@ -89,7 +91,12 @@ class DateCountdown extends Component {
         return newState
     }
 
-
+    componentWillUnmount(){
+        clearInterval(this.state.tickId)
+        timeoutList.forEach(x=>{
+            clearTimeout(x);
+        })
+    }
 
 
     animateAndChangeIfNeeded = (unit,prevUnit) => {
@@ -101,21 +108,21 @@ class DateCountdown extends Component {
             for(let i = 0; i < digits.length; i++){
 
                 if(i === digits.length-1){
-                    setTimeout(()=>{
-                        digits[i].classList.add('odometerEnd');
-                        setTimeout(()=> {
-                            digits[i].classList.remove('odometerEnd')
-                            digits[i].classList.add('odometerStart')
+                    this.timeoutList.push(setTimeout(()=>{
+                        digits[i].classList.toggle('odometerEnd');
+                        this.timeoutList.push(setTimeout(()=> {
+                            digits[i].classList.toggle('odometerEnd')
+                            digits[i].classList.toggle('odometerStart')
                             if(prevUnit!=='none'){
                                 let newState = {};
                                 newState[prevUnit]=59;
                                 newState[unit]=this.state[unit]-1;
                                 this.setState(newState);
                             }
-                            setTimeout(()=>digits[i].classList.remove('odometerStart'),speed);
+                            this.timeoutList.push(setTimeout(()=>digits[i].classList.toggle('odometerStart'),speed));
 
-                        },speed);
-                    },1000-speed)
+                        },speed));
+                    },1000-speed))
                 }else{
                     let allZeros = true;
                     for(let j = i+1; j < digits.length; j++){
@@ -127,20 +134,20 @@ class DateCountdown extends Component {
                         }
                     }
                     if(allZeros){
-                        setTimeout(()=>{
-                            digits[i].classList.add('odometerEnd');
-                            setTimeout(()=> {
-                                digits[i].classList.remove('odometerEnd')
-                                digits[i].classList.add('odometerStart')
+                        this.timeoutList.push(setTimeout(()=>{
+                            digits[i].classList.toggle('odometerEnd');
+                            this.timeoutList.push(setTimeout(()=> {
+                                digits[i].classList.toggle('odometerEnd')
+                                digits[i].classList.toggle('odometerStart')
                                 if(prevUnit!=='none'){
                                     let newState = {};
                                     newState[prevUnit]=59;
                                     newState[unit]=this.state[unit]-1;
                                     this.setState(newState);
                                 }
-                                setTimeout(()=>digits[i].classList.remove('odometerStart'),speed);
-                            },speed);
-                        },1000-speed)
+                                this.timeoutList.push(setTimeout(()=>digits[i].classList.toggle('odometerStart'),speed));
+                            },speed));
+                        },1000-speed))
                     }
                 }
 
@@ -189,7 +196,7 @@ class DateCountdown extends Component {
 
     render(){
         let { significance } = this.state;
-        let { locales, locales-plural } = this.props;
+        let { locales, locales_plural } = this.props;
         let units = ['year','month','day','hour','min','sec'];
 
         if(this.state.diff < 0){ // past date
@@ -211,7 +218,7 @@ class DateCountdown extends Component {
                     { units.map((unit,key)=>{
                         if(significance.indexOf(unit) !== -1)
                         {
-                            return (<span key={key}><span className={`${unit}`} >{this.dissect(this.state[unit],unit)}</span> {this.state[unit]<=1 && locales[key]}{this.state[unit]>1 && locales-plural[key]}{` `}</span>);
+                            return (<span key={key}><span className={`${unit}`} >{this.dissect(this.state[unit],unit)}</span> {this.state[unit]<=1 && locales[key]}{this.state[unit]>1 && locales_plural[key]}{` `}</span>);
                         }
                         else return null;
                     })}
@@ -223,7 +230,7 @@ class DateCountdown extends Component {
 
 DateCountdown.propTypes = {
     locales: PropTypes.array,
-    locales-plural: PropTypes.array,
+    locales_plural: PropTypes.array,
     dateTo: PropTypes.string.isRequired,
     callback: PropTypes.func,
     mostSignificantFigure: PropTypes.string,
@@ -232,7 +239,7 @@ DateCountdown.propTypes = {
 
 DateCountdown.defaultProps = {
     locales: ['year','month','day','hour','minute','second'],
-    locales-plural: ['years','months','days','hours','minutes','seconds'],
+    locales_plural: ['years','months','days','hours','minutes','seconds'],
     dateTo: (new Date()).toString(),
     callback: ()=>null,
     mostSignificantFigure: 'none',

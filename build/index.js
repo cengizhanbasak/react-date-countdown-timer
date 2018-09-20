@@ -415,6 +415,8 @@ var calculateStateFromProps = function calculateStateFromProps(props) {
     var min = Math.floor(diff / 60000 % 60); // time diff's minutes (modulated to 60)
     var sec = Math.floor(diff / 1000 % 60); // time diff's seconds (modulated to 60)
 
+    var timeoutList = [];
+
     if (mostSignificantFigure === 'none') {
         if (year === 0) {
             significance = significance.slice(1);
@@ -498,22 +500,22 @@ var DateCountdown = function (_Component) {
                     var _loop = function _loop(i) {
 
                         if (i === digits.length - 1) {
-                            setTimeout(function () {
-                                digits[i].classList.add('odometerEnd');
-                                setTimeout(function () {
-                                    digits[i].classList.remove('odometerEnd');
-                                    digits[i].classList.add('odometerStart');
+                            _this.timeoutList.push(setTimeout(function () {
+                                digits[i].classList.toggle('odometerEnd');
+                                _this.timeoutList.push(setTimeout(function () {
+                                    digits[i].classList.toggle('odometerEnd');
+                                    digits[i].classList.toggle('odometerStart');
                                     if (prevUnit !== 'none') {
                                         var newState = {};
                                         newState[prevUnit] = 59;
                                         newState[unit] = _this.state[unit] - 1;
                                         _this.setState(newState);
                                     }
-                                    setTimeout(function () {
-                                        return digits[i].classList.remove('odometerStart');
-                                    }, speed);
-                                }, speed);
-                            }, 1000 - speed);
+                                    _this.timeoutList.push(setTimeout(function () {
+                                        return digits[i].classList.toggle('odometerStart');
+                                    }, speed));
+                                }, speed));
+                            }, 1000 - speed));
                         } else {
                             var allZeros = true;
                             for (var j = i + 1; j < digits.length; j++) {
@@ -525,22 +527,22 @@ var DateCountdown = function (_Component) {
                                 }
                             }
                             if (allZeros) {
-                                setTimeout(function () {
-                                    digits[i].classList.add('odometerEnd');
-                                    setTimeout(function () {
-                                        digits[i].classList.remove('odometerEnd');
-                                        digits[i].classList.add('odometerStart');
+                                _this.timeoutList.push(setTimeout(function () {
+                                    digits[i].classList.toggle('odometerEnd');
+                                    _this.timeoutList.push(setTimeout(function () {
+                                        digits[i].classList.toggle('odometerEnd');
+                                        digits[i].classList.toggle('odometerStart');
                                         if (prevUnit !== 'none') {
                                             var newState = {};
                                             newState[prevUnit] = 59;
                                             newState[unit] = _this.state[unit] - 1;
                                             _this.setState(newState);
                                         }
-                                        setTimeout(function () {
-                                            return digits[i].classList.remove('odometerStart');
-                                        }, speed);
-                                    }, speed);
-                                }, 1000 - speed);
+                                        _this.timeoutList.push(setTimeout(function () {
+                                            return digits[i].classList.toggle('odometerStart');
+                                        }, speed));
+                                    }, speed));
+                                }, 1000 - speed));
                             }
                         }
                     };
@@ -607,16 +609,27 @@ var DateCountdown = function (_Component) {
             });
         }
     }, {
+        key: 'componentWillUnmount',
+        value: function componentWillUnmount() {
+            clearInterval(this.state.tickId);
+            timeoutList.forEach(function (x) {
+                clearTimeout(x);
+            });
+        }
+    }, {
         key: 'render',
         value: function render() {
             var _this3 = this;
 
             var significance = this.state.significance;
-            var locales = this.props.locales;
+            var _props = this.props,
+                locales = _props.locales,
+                locales_plural = _props.locales_plural;
+
+            var units = ['year', 'month', 'day', 'hour', 'min', 'sec'];
 
             if (this.state.diff < 0) {
                 // past date
-                var units = ['year', 'month', 'day', 'hour', 'min', 'sec'];
                 return _react2.default.createElement(
                     'span',
                     { className: 'odometer-block' },
@@ -633,12 +646,10 @@ var DateCountdown = function (_Component) {
                     })
                 );
             } else {
-                var _units = ['year', 'month', 'day', 'hour', 'min', 'sec'];
-
                 return _react2.default.createElement(
                     'span',
                     { className: 'odometer-block' },
-                    _units.map(function (unit, key) {
+                    units.map(function (unit, key) {
                         if (significance.indexOf(unit) !== -1) {
                             return _react2.default.createElement(
                                 'span',
@@ -649,8 +660,8 @@ var DateCountdown = function (_Component) {
                                     _this3.dissect(_this3.state[unit], unit)
                                 ),
                                 ' ',
-                                locales[key],
-                                _this3.state[unit] > 1 && 's',
+                                _this3.state[unit] <= 1 && locales[key],
+                                _this3.state[unit] > 1 && locales_plural[key],
                                 ' '
                             );
                         } else return null;
@@ -671,6 +682,7 @@ var DateCountdown = function (_Component) {
 
 DateCountdown.propTypes = {
     locales: _propTypes2.default.array,
+    locales_plural: _propTypes2.default.array,
     dateTo: _propTypes2.default.string.isRequired,
     callback: _propTypes2.default.func,
     mostSignificantFigure: _propTypes2.default.string,
@@ -679,6 +691,7 @@ DateCountdown.propTypes = {
 
 DateCountdown.defaultProps = {
     locales: ['year', 'month', 'day', 'hour', 'minute', 'second'],
+    locales_plural: ['years', 'months', 'days', 'hours', 'minutes', 'seconds'],
     dateTo: new Date().toString(),
     callback: function callback() {
         return null;
