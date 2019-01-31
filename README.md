@@ -14,7 +14,7 @@ You can see a demo app where you can play with props from [here](https://react-d
 ```javascript
 import DateCountdown from 'react-date-countdown-timer';
 // ...
-return <DateCountdown dateTo='2023-01-01 00:00:00 GMT+0300' callback={()=>alert('Hello')}  />;
+return <DateCountdown dateTo='January 01, 2023 00:00:00 GMT+03:00' callback={()=>alert('Hello')}  />;
 ```
 ## Properties
 * dateTo(string)(required): target date to countdown
