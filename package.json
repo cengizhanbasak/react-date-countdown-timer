@@ -1,6 +1,6 @@
 {
   "name": "react-date-countdown-timer",
-  "version": "1.0.2",
+  "version": "1.0.4",
   "description": "Date countdown timer component with a cool animaton for react.js",
   "main": "build/index.js",
   "keywords": [
@@ -31,12 +31,12 @@
     "webpack": "^2.6.1"
   },
   "author": {
-    "name": "Tosunami",
-    "email": "tosunami@protonmail.com"
+    "name": "cengizhanbasak",
+    "email": "cengizhanbasakk@gmail.com"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/Tosunami/react-date-countdown-timer"
+    "url": "https://github.com/cengizhanbasak/react-date-countdown-timer"
   },
   "license": "MIT"
 }

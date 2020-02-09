@@ -75,7 +75,11 @@ const calculateStateFromProps = (props) => {
 }
 
 class DateCountdown extends Component {
-
+    
+    constructor(props) {
+        super(props);
+        this.state = {};
+    }
     componentDidMount(){
         this.setState(calculateStateFromProps(this.props), ()=>{
             if(this.state.diff > 0){
@@ -99,7 +103,7 @@ class DateCountdown extends Component {
         let {speed, significance} = this.state;
 
         if(significance.indexOf(unit) !== -1){
-            let unitSpan = document.getElementsByClassName(unit)[0];
+            let unitSpan = this.refs[unit]
             let digits = unitSpan.children;
             for(let i = 0; i < digits.length; i++){
 
@@ -214,7 +218,7 @@ class DateCountdown extends Component {
                     { units.map((unit,key)=>{
                         if(significance.indexOf(unit) !== -1)
                         {
-                            return (<span key={key}><span className={`${unit}`} >{this.dissect(this.state[unit],unit)}</span> {this.state[unit]<=1 && locales[key]}{this.state[unit]>1 && locales_plural[key]}{` `}</span>);
+                            return (<span key={key}><span ref={unit} className={`${unit}`} >{this.dissect(this.state[unit],unit)}</span> {this.state[unit]<=1 && locales[key]}{this.state[unit]>1 && locales_plural[key]}{` `}</span>);
                         }
                         else return null;
                     })}

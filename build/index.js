@@ -474,18 +474,12 @@ var calculateStateFromProps = function calculateStateFromProps(props) {
 var DateCountdown = function (_Component) {
     _inherits(DateCountdown, _Component);
 
-    function DateCountdown() {
-        var _ref;
-
-        var _temp, _this, _ret;
-
+    function DateCountdown(props) {
         _classCallCheck(this, DateCountdown);
 
-        for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
-            args[_key] = arguments[_key];
-        }
+        var _this = _possibleConstructorReturn(this, (DateCountdown.__proto__ || Object.getPrototypeOf(DateCountdown)).call(this, props));
 
-        return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = DateCountdown.__proto__ || Object.getPrototypeOf(DateCountdown)).call.apply(_ref, [this].concat(args))), _this), _this.animateAndChangeIfNeeded = function (unit, prevUnit) {
+        _this.animateAndChangeIfNeeded = function (unit, prevUnit) {
             var _this$state = _this.state,
                 speed = _this$state.speed,
                 significance = _this$state.significance;
@@ -493,7 +487,7 @@ var DateCountdown = function (_Component) {
 
             if (significance.indexOf(unit) !== -1) {
                 (function () {
-                    var unitSpan = document.getElementsByClassName(unit)[0];
+                    var unitSpan = _this.refs[unit];
                     var digits = unitSpan.children;
 
                     var _loop = function _loop(i) {
@@ -551,7 +545,9 @@ var DateCountdown = function (_Component) {
                     }
                 })();
             }
-        }, _this.tick = function () {
+        };
+
+        _this.tick = function () {
             _this.setState({ sec: _this.state.sec - 1 });
             _this.animateAndChangeIfNeeded('sec', 'none');
 
@@ -580,7 +576,9 @@ var DateCountdown = function (_Component) {
                 clearInterval(_this.state.tickId);
                 _this.props.callback();
             }
-        }, _this.dissect = function (value, unit) {
+        };
+
+        _this.dissect = function (value, unit) {
             var valStr = Number(value).toString();
             if (valStr.length === 1) {
                 valStr = '0' + valStr;
@@ -592,7 +590,10 @@ var DateCountdown = function (_Component) {
                     digit
                 );
             });
-        }, _temp), _possibleConstructorReturn(_this, _ret);
+        };
+
+        _this.state = {};
+        return _this;
     }
 
     _createClass(DateCountdown, [{
@@ -652,7 +653,7 @@ var DateCountdown = function (_Component) {
                                 { key: key },
                                 _react2.default.createElement(
                                     'span',
-                                    { className: '' + unit },
+                                    { ref: unit, className: '' + unit },
                                     _this3.dissect(_this3.state[unit], unit)
                                 ),
                                 ' ',
