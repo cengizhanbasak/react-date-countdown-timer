@@ -1,6 +1,6 @@
 {
   "name": "react-date-countdown-timer",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Date countdown timer component with a cool animaton for react.js",
   "main": "build/index.js",
   "keywords": [
@@ -15,6 +15,7 @@
     "build": "webpack"
   },
   "dependencies": {
+    "prop-types": "^15.7.2",
     "react": "^16.4.2"
   },
   "devDependencies": {
@@ -27,6 +28,12 @@
     "babel-preset-env": "^1.7.0",
     "babel-preset-react": "^6.24.1",
     "css-loader": "^1.0.0",
+    "eslint": "^7.11.0",
+    "eslint-config-airbnb": "^18.2.0",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-jsx-a11y": "^6.3.1",
+    "eslint-plugin-react": "^7.21.4",
+    "eslint-plugin-react-hooks": "^4.1.2",
     "style-loader": "^0.23.0",
     "webpack": "^2.6.1"
   },
