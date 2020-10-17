@@ -1,250 +1,276 @@
+/* eslint-disable react/no-unused-prop-types */
+/* eslint-disable react/default-props-match-prop-types */
+/* eslint-disable react/forbid-prop-types */
+/* eslint-disable react/no-array-index-key */
+/* eslint-disable react/jsx-filename-extension */
+/* eslint-disable class-methods-use-this */
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import './style.css';
 
 const calculateStateFromProps = (props) => {
-    let { dateTo, numberOfFigures, mostSignificantFigure } = props;
-    const currentDate = new Date();
-    const targetDate = new Date(dateTo);
-    const diff = targetDate-currentDate;
-    var significance = ['year','month','day','hour','min','sec'];
+  let { dateTo, numberOfFigures, mostSignificantFigure } = props;
+  const currentDate = new Date();
+  const targetDate = new Date(dateTo);
+  const diff = targetDate - currentDate;
+  let significance = ['year', 'month', 'day', 'hour', 'min', 'sec'];
 
-    let year= Math.floor(diff/31104000000);// time diff in years
-    let month= Math.floor((diff/2592000000)%12); // time diff in months (modulated to 12)
-    let day= Math.floor((diff/86400000)%30); // time diff in days (modulated to 30)
-    let hour= Math.floor((diff/3600000)%24); // time diff's hours (modulated to 24)
-    let min= Math.floor((diff/60000)%60); // time diff's minutes (modulated to 60)
-    let sec= Math.floor((diff/1000)%60); // time diff's seconds (modulated to 60)
+  let year = Math.floor(diff / 31104000000);// time diff in years
+  let month = Math.floor((diff / 2592000000) % 12); // time diff in months (modulated to 12)
+  let day = Math.floor((diff / 86400000) % 30); // time diff in days (modulated to 30)
+  let hour = Math.floor((diff / 3600000) % 24); // time diff's hours (modulated to 24)
+  let min = Math.floor((diff / 60000) % 60); // time diff's minutes (modulated to 60)
+  let sec = Math.floor((diff / 1000) % 60); // time diff's seconds (modulated to 60)
 
-
-    if(mostSignificantFigure === 'none'){
-        if(year === 0){
-            significance=significance.slice(1);
-            if(month === 0){
-                significance=significance.slice(1);
-                if(day === 0){
-                    significance=significance.slice(1);
-                    if(hour === 0){
-                        significance=significance.slice(1);
-                        if(min === 0){
-                            significance=significance.slice(1);
-                        }
-                    }
-                }
+  if (mostSignificantFigure === 'none') {
+    if (year === 0) {
+      significance = significance.slice(1);
+      if (month === 0) {
+        significance = significance.slice(1);
+        if (day === 0) {
+          significance = significance.slice(1);
+          if (hour === 0) {
+            significance = significance.slice(1);
+            if (min === 0) {
+              significance = significance.slice(1);
             }
+          }
         }
+      }
     }
-    else{
-        significance = significance.slice(significance.indexOf(mostSignificantFigure));
-    }
-    significance = significance.slice(0,numberOfFigures);
+  } else {
+    significance = significance.slice(significance.indexOf(mostSignificantFigure));
+  }
+  significance = significance.slice(0, numberOfFigures);
 
-
-    if(significance.indexOf('year')===-1){
-        month += year*12;
-        year = 0;
-    }
-    if(significance.indexOf('month')===-1){
-        day += month*30;
-        month = 0;
-    }
-    if(significance.indexOf('day')===-1){
-        hour += day*24;
-        day = 0;
-    }
-    if(significance.indexOf('hour')===-1){
-        min += hour*60;
-        hour = 0;
-    }
-    if(significance.indexOf('min')===-1){
-        sec += min*60;
-        min = 0;
-    }
-    if(diff <= 0 ) props.callback();
-    return {
-        speed:250,
-        diff: diff,
-        significance: significance,
-        year: year,
-        month: month,
-        day: day,
-        hour: hour,
-        min: min,
-        sec: sec
-    };
-}
+  if (significance.indexOf('year') === -1) {
+    month += year * 12;
+    year = 0;
+  }
+  if (significance.indexOf('month') === -1) {
+    day += month * 30;
+    month = 0;
+  }
+  if (significance.indexOf('day') === -1) {
+    hour += day * 24;
+    day = 0;
+  }
+  if (significance.indexOf('hour') === -1) {
+    min += hour * 60;
+    hour = 0;
+  }
+  if (significance.indexOf('min') === -1) {
+    sec += min * 60;
+    min = 0;
+  }
+  if (diff <= 0) props.callback();
+  return {
+    speed: 250,
+    diff,
+    significance,
+    year,
+    month,
+    day,
+    hour,
+    min,
+    sec
+  };
+};
 
 class DateCountdown extends Component {
-    
-    constructor(props) {
-        super(props);
-        this.state = {};
-    }
-    componentDidMount(){
-        this.setState(calculateStateFromProps(this.props), ()=>{
-            if(this.state.diff > 0){
-                var tickId = setInterval(this.tick,1000);
-                this.setState({tickId:tickId});
+  constructor(props) {
+    super(props);
+    this.state = {};
+  }
+
+  componentDidMount() {
+    const { diff } = this.state;
+    this.setState(calculateStateFromProps(this.props), () => {
+      if (diff > 0) {
+        let tickId = setInterval(this.tick, 1000);
+        this.setState({ tickId });
+      }
+    });
+  }
+
+  static getDerivedStateFromProps(props) {
+    let newState = calculateStateFromProps(props);
+    return newState;
+  }
+
+  componentWillUnmount() {
+    const { tickId } = this.state;
+    clearInterval(tickId);
+  }
+
+  animateAndChangeIfNeeded(unit, prevUnit) {
+    const { state, refs } = this;
+    let { speed, significance } = state;
+
+    if (significance.indexOf(unit) !== -1) {
+      let unitSpan = refs[unit];
+      let digits = unitSpan.children;
+      for (let i = 0; i < digits.length; i += 1) {
+        if (i === digits.length - 1) {
+          setTimeout(() => {
+            digits[i].classList.toggle('odometerEnd');
+            setTimeout(() => {
+              digits[i].classList.toggle('odometerEnd');
+              digits[i].classList.toggle('odometerStart');
+              if (prevUnit !== 'none') {
+                let newState = {};
+                newState[prevUnit] = 59;
+                newState[unit] = state[unit] - 1;
+                this.setState(newState);
+              }
+              setTimeout(() => digits[i].classList.toggle('odometerStart'), speed);
+            }, speed);
+          }, 1000 - speed);
+        } else {
+          let allZeros = true;
+          for (let j = i + 1; j < digits.length; j += 1) {
+            if (digits[j].innerHTML === '0') {
+              allZeros = true;
+            } else {
+              allZeros = false;
+              break;
             }
-        });
-    }
-
-    static getDerivedStateFromProps(props, state){
-        let newState = calculateStateFromProps(props);
-        return newState
-    }
-
-    componentWillUnmount(){
-        clearInterval(this.state.tickId)
-    }
-
-
-    animateAndChangeIfNeeded = (unit,prevUnit) => {
-        let {speed, significance} = this.state;
-
-        if(significance.indexOf(unit) !== -1){
-            let unitSpan = this.refs[unit]
-            let digits = unitSpan.children;
-            for(let i = 0; i < digits.length; i++){
-
-                if(i === digits.length-1){
-                    setTimeout(()=>{
-                        digits[i].classList.toggle('odometerEnd');
-                        setTimeout(()=> {
-                            digits[i].classList.toggle('odometerEnd')
-                            digits[i].classList.toggle('odometerStart')
-                            if(prevUnit!=='none'){
-                                let newState = {};
-                                newState[prevUnit]=59;
-                                newState[unit]=this.state[unit]-1;
-                                this.setState(newState);
-                            }
-                            setTimeout(()=>digits[i].classList.toggle('odometerStart'),speed);
-
-                        },speed);
-                    },1000-speed)
-                }else{
-                    let allZeros = true;
-                    for(let j = i+1; j < digits.length; j++){
-                        if(digits[j].innerHTML === '0'){
-                            allZeros = true;
-                        }else{
-                            allZeros = false;
-                            break;
-                        }
-                    }
-                    if(allZeros){
-                        setTimeout(()=>{
-                            digits[i].classList.toggle('odometerEnd');
-                            setTimeout(()=> {
-                                digits[i].classList.toggle('odometerEnd')
-                                digits[i].classList.toggle('odometerStart')
-                                if(prevUnit!=='none'){
-                                    let newState = {};
-                                    newState[prevUnit]=59;
-                                    newState[unit]=this.state[unit]-1;
-                                    this.setState(newState);
-                                }
-                                setTimeout(()=>digits[i].classList.toggle('odometerStart'),speed);
-                            },speed);
-                        },1000-speed)
-                    }
+          }
+          if (allZeros) {
+            setTimeout(() => {
+              digits[i].classList.toggle('odometerEnd');
+              setTimeout(() => {
+                digits[i].classList.toggle('odometerEnd');
+                digits[i].classList.toggle('odometerStart');
+                if (prevUnit !== 'none') {
+                  let newState = {};
+                  newState[prevUnit] = 59;
+                  newState[unit] = state[unit] - 1;
+                  this.setState(newState);
                 }
+                setTimeout(() => digits[i].classList.toggle('odometerStart'), speed);
+              }, speed);
+            }, 1000 - speed);
+          }
+        }
+      }
+    }
+  }
 
+  tick() {
+    const {
+      sec,
+      min,
+      hour,
+      day,
+      month,
+      year,
+      tickId
+    } = this.state;
+    const { callback } = this.props;
+    this.setState({ sec: sec - 1 });
+    this.animateAndChangeIfNeeded('sec', 'none');
+
+    if (sec === 0) {
+      this.animateAndChangeIfNeeded('min', 'sec');
+
+      if (min === 0) {
+        this.animateAndChangeIfNeeded('hour', 'min');
+
+        if (hour === 0) {
+          this.animateAndChangeIfNeeded('day', 'hour');
+
+          if (day === 0) {
+            this.animateAndChangeIfNeeded('month', 'day');
+
+            if (month === 0) {
+              this.animateAndChangeIfNeeded('year', 'month');
             }
+          }
         }
+      }
     }
 
-    tick = () => {
-        this.setState({sec:this.state.sec-1})
-        this.animateAndChangeIfNeeded('sec','none')
+    if (sec === 0 && min === 0 && hour === 0 && day === 0 && month === 0 && year === 0) {
+      this.setState({ diff: -1 });
+      clearInterval(tickId);
+      callback();
+    }
+  }
 
-        if(this.state.sec === 0){
-            this.animateAndChangeIfNeeded('min','sec');
+  dissect(value) {
+    let valStr = Number(value).toString();
+    if (valStr.length === 1) {
+      valStr = `0${valStr}`;
+    }
+    return valStr.split('').map((digit, key) => <span key={key} className={key}>{digit}</span>);
+  }
 
-            if(this.state.min === 0){
-                this.animateAndChangeIfNeeded('hour','min');
+  render() {
+    const { state } = this;
+    let { significance, diff } = state;
+    // eslint-disable-next-line camelcase
+    let { locales, locales_plural } = this.props;
+    let units = ['year', 'month', 'day', 'hour', 'min', 'sec'];
 
-                if(this.state.hour === 0){
-                    this.animateAndChangeIfNeeded('day','hour');
-
-                    if(this.state.day === 0){
-                        this.animateAndChangeIfNeeded('month','day');
-
-                        if(this.state.month === 0){
-                            this.animateAndChangeIfNeeded('year','month');
-                        }
-                    }
-                }
-            }
-        }
-
-        if(this.state.sec === 0 && this.state.min === 0 && this.state.hour === 0 && this.state.day === 0 && this.state.month === 0 && this.state.year === 0){
-            this.setState({diff:-1})
-            clearInterval(this.state.tickId);
-            this.props.callback();
-        }
+    if (diff < 0) { // past date
+      return (
+        <span className="odometer-block">
+          {
+            units.map((unit, key) => {
+              if (significance.indexOf(unit) !== -1) {
+                return (
+                  <span key={key}>
+                    0
+                    {locales[key]}
+                  </span>
+                );
+              }
+              return null;
+            })
+          }
+        </span>
+      );
     }
 
-    dissect = (value,unit) =>{
-        let valStr = Number(value).toString();
-        if(valStr.length === 1){
-            valStr = `0${valStr}`;
-        }
-        return valStr.split('').map((digit,key)=> <span key={key} className={key} >{digit}</span>);
-    }
-
-    render(){
-        let { significance } = this.state;
-        let { locales, locales_plural } = this.props;
-        let units = ['year','month','day','hour','min','sec'];
-
-        if(this.state.diff < 0){ // past date
+    return (
+      <span className="odometer-block">
+        { units.map((unit, key) => {
+          if (significance.indexOf(unit) !== -1) {
             return (
-                <span className="odometer-block">
-                    {
-                        units.map((unit,key)=>{
-                            if(significance.indexOf(unit) !== -1)
-                            {return (<span key={key}>0 {locales[key]} </span>)}
-                            else return null;
-                        })
-                    }
-                </span>
-            )
-        }
-        else{
-            return (
-                <span className="odometer-block">
-                    { units.map((unit,key)=>{
-                        if(significance.indexOf(unit) !== -1)
-                        {
-                            return (<span key={key}><span ref={unit} className={`${unit}`} >{this.dissect(this.state[unit],unit)}</span> {this.state[unit]<=1 && locales[key]}{this.state[unit]>1 && locales_plural[key]}{` `}</span>);
-                        }
-                        else return null;
-                    })}
-                </span>
+              <span key={key}>
+                <span ref={unit} className={`${unit}`}>{this.dissect(state[unit], unit)}</span>
+                {' '}
+                {state[unit] <= 1 && locales[key]}
+                {state[unit] > 1 && locales_plural[key]}
+                {' '}
+              </span>
             );
-        }
-    }
+          }
+          return null;
+        })}
+      </span>
+    );
+  }
 }
 
 DateCountdown.propTypes = {
-    locales: PropTypes.array,
-    locales_plural: PropTypes.array,
-    dateTo: PropTypes.string.isRequired,
-    callback: PropTypes.func,
-    mostSignificantFigure: PropTypes.string,
-    numberOfFigures: PropTypes.number
-}
+  locales: PropTypes.array,
+  locales_plural: PropTypes.array,
+  // eslint-disable-next-line react/require-default-props
+  dateTo: PropTypes.string.isRequired,
+  callback: PropTypes.func,
+  mostSignificantFigure: PropTypes.string,
+  numberOfFigures: PropTypes.number
+};
 
 DateCountdown.defaultProps = {
-    locales: ['year','month','day','hour','minute','second'],
-    locales_plural: ['years','months','days','hours','minutes','seconds'],
-    dateTo: (new Date()).toString(),
-    callback: ()=>null,
-    mostSignificantFigure: 'none',
-    numberOfFigures: 6
-}
-
+  locales: ['year', 'month', 'day', 'hour', 'minute', 'second'],
+  locales_plural: ['years', 'months', 'days', 'hours', 'minutes', 'seconds'],
+  dateTo: (new Date()).toString(),
+  callback: () => null,
+  mostSignificantFigure: 'none',
+  numberOfFigures: 6
+};
 
 export default DateCountdown;
