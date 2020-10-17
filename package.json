@@ -18,6 +18,9 @@
     "prop-types": "^15.7.2",
     "react": "^16.4.2"
   },
+  "files": [
+    "/build"
+  ],
   "devDependencies": {
     "babel-cli": "^6.26.0",
     "babel-core": "^6.26.3",
