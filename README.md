@@ -18,6 +18,7 @@ return <DateCountdown dateTo='January 01, 2023 00:00:00 GMT+03:00' callback={()=
 ```
 ## Properties
 * dateTo(string)(required): target date to countdown
+* dateFrom(string): date to start counting down (for passing server date etc.)
 * callback(function): function to run after the countdown is completed (default null)
 * mostSignificantFigure(string): most significant figure to show about the remaining time (default 'none')
 * numberOfFigures(number): number of figures to show from mostSignificantFigure (default 6)
