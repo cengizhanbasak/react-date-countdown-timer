@@ -1,6 +1,6 @@
 {
   "name": "react-date-countdown-timer",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "Date countdown timer component with a cool animaton for react.js",
   "main": "build/index.js",
   "keywords": [
