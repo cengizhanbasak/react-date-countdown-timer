@@ -23,6 +23,7 @@ return <DateCountdown dateTo='January 01, 2023 00:00:00 GMT+03:00' callback={()=
 * numberOfFigures(number): number of figures to show from mostSignificantFigure (default 6)
 * locales(array(string)): locales strings for units (default ['year','month','day','hour','minute','second'])
 * locales_plural(array(string)): locales strings for units' plural form (default ['years','months','days','hours','minutes','seconds'])
+* noAnimate(bool): whether to animate the countdown or not (default false)
 
 
 mostSignificantFigure can be one of these values:

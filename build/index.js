@@ -491,6 +491,9 @@ var DateCountdown = function (_Component) {
     var _this = _possibleConstructorReturn(this, (DateCountdown.__proto__ || Object.getPrototypeOf(DateCountdown)).call(this, props));
 
     _this.state = {};
+    _this.animateAndChangeIfNeeded = _this.animateAndChangeIfNeeded.bind(_this);
+    _this.tick = _this.tick.bind(_this);
+    _this.dissect = _this.dissect.bind(_this);
     return _this;
   }
 
@@ -521,7 +524,9 @@ var DateCountdown = function (_Component) {
       var _this3 = this;
 
       var state = this.state,
-          refs = this.refs;
+          refs = this.refs,
+          props = this.props;
+      var noAnimate = props.noAnimate;
       var speed = state.speed,
           significance = state.significance;
 
@@ -534,17 +539,17 @@ var DateCountdown = function (_Component) {
           var _loop = function _loop(i) {
             if (i === digits.length - 1) {
               setTimeout(function () {
-                digits[i].classList.toggle('odometerEnd');
+                if (!noAnimate) digits[i].classList.toggle('odometerEnd');
                 setTimeout(function () {
-                  digits[i].classList.toggle('odometerEnd');
-                  digits[i].classList.toggle('odometerStart');
+                  if (!noAnimate) digits[i].classList.toggle('odometerEnd');
+                  if (!noAnimate) digits[i].classList.toggle('odometerStart');
                   if (prevUnit !== 'none') {
                     var newState = {};
                     newState[prevUnit] = 59;
                     newState[unit] = state[unit] - 1;
                     _this3.setState(newState);
                   }
-                  setTimeout(function () {
+                  if (!noAnimate) setTimeout(function () {
                     return digits[i].classList.toggle('odometerStart');
                   }, speed);
                 }, speed);
@@ -561,17 +566,17 @@ var DateCountdown = function (_Component) {
               }
               if (allZeros) {
                 setTimeout(function () {
-                  digits[i].classList.toggle('odometerEnd');
+                  if (!noAnimate) digits[i].classList.toggle('odometerEnd');
                   setTimeout(function () {
-                    digits[i].classList.toggle('odometerEnd');
-                    digits[i].classList.toggle('odometerStart');
+                    if (!noAnimate) digits[i].classList.toggle('odometerEnd');
+                    if (!noAnimate) digits[i].classList.toggle('odometerStart');
                     if (prevUnit !== 'none') {
                       var newState = {};
                       newState[prevUnit] = 59;
                       newState[unit] = state[unit] - 1;
                       _this3.setState(newState);
                     }
-                    setTimeout(function () {
+                    if (!noAnimate) setTimeout(function () {
                       return digits[i].classList.toggle('odometerStart');
                     }, speed);
                   }, speed);
@@ -719,7 +724,8 @@ DateCountdown.propTypes = {
   dateTo: _propTypes2.default.string.isRequired,
   callback: _propTypes2.default.func,
   mostSignificantFigure: _propTypes2.default.string,
-  numberOfFigures: _propTypes2.default.number
+  numberOfFigures: _propTypes2.default.number,
+  noAnimate: _propTypes2.default.bool
 };
 
 DateCountdown.defaultProps = {
@@ -730,7 +736,8 @@ DateCountdown.defaultProps = {
     return null;
   },
   mostSignificantFigure: 'none',
-  numberOfFigures: 6
+  numberOfFigures: 6,
+  noAnimate: false
 };
 
 exports.default = DateCountdown;
