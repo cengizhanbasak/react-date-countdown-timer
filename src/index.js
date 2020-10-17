@@ -81,6 +81,9 @@ class DateCountdown extends Component {
   constructor(props) {
     super(props);
     this.state = {};
+    this.animateAndChangeIfNeeded = this.animateAndChangeIfNeeded.bind(this);
+    this.tick = this.tick.bind(this);
+    this.dissect = this.dissect.bind(this);
   }
 
   componentDidMount() {
@@ -104,7 +107,8 @@ class DateCountdown extends Component {
   }
 
   animateAndChangeIfNeeded(unit, prevUnit) {
-    const { state, refs } = this;
+    const { state, refs, props } = this;
+    const { noAnimate } = props;
     let { speed, significance } = state;
 
     if (significance.indexOf(unit) !== -1) {
@@ -113,17 +117,17 @@ class DateCountdown extends Component {
       for (let i = 0; i < digits.length; i += 1) {
         if (i === digits.length - 1) {
           setTimeout(() => {
-            digits[i].classList.toggle('odometerEnd');
+            if (!noAnimate) digits[i].classList.toggle('odometerEnd');
             setTimeout(() => {
-              digits[i].classList.toggle('odometerEnd');
-              digits[i].classList.toggle('odometerStart');
+              if (!noAnimate) digits[i].classList.toggle('odometerEnd');
+              if (!noAnimate) digits[i].classList.toggle('odometerStart');
               if (prevUnit !== 'none') {
                 let newState = {};
                 newState[prevUnit] = 59;
                 newState[unit] = state[unit] - 1;
                 this.setState(newState);
               }
-              setTimeout(() => digits[i].classList.toggle('odometerStart'), speed);
+              if (!noAnimate) setTimeout(() => digits[i].classList.toggle('odometerStart'), speed);
             }, speed);
           }, 1000 - speed);
         } else {
@@ -138,17 +142,17 @@ class DateCountdown extends Component {
           }
           if (allZeros) {
             setTimeout(() => {
-              digits[i].classList.toggle('odometerEnd');
+              if (!noAnimate) digits[i].classList.toggle('odometerEnd');
               setTimeout(() => {
-                digits[i].classList.toggle('odometerEnd');
-                digits[i].classList.toggle('odometerStart');
+                if (!noAnimate) digits[i].classList.toggle('odometerEnd');
+                if (!noAnimate) digits[i].classList.toggle('odometerStart');
                 if (prevUnit !== 'none') {
                   let newState = {};
                   newState[prevUnit] = 59;
                   newState[unit] = state[unit] - 1;
                   this.setState(newState);
                 }
-                setTimeout(() => digits[i].classList.toggle('odometerStart'), speed);
+                if (!noAnimate) setTimeout(() => digits[i].classList.toggle('odometerStart'), speed);
               }, speed);
             }, 1000 - speed);
           }
@@ -261,8 +265,9 @@ DateCountdown.propTypes = {
   dateTo: PropTypes.string.isRequired,
   callback: PropTypes.func,
   mostSignificantFigure: PropTypes.string,
-  numberOfFigures: PropTypes.number
-};
+  numberOfFigures: PropTypes.number,
+  noAnimate: PropTypes.bool
+}
 
 DateCountdown.defaultProps = {
   locales: ['year', 'month', 'day', 'hour', 'minute', 'second'],
@@ -270,7 +275,8 @@ DateCountdown.defaultProps = {
   dateTo: (new Date()).toString(),
   callback: () => null,
   mostSignificantFigure: 'none',
-  numberOfFigures: 6
+  numberOfFigures: 6,
+  noAnimate: false,
 };
 
 export default DateCountdown;
