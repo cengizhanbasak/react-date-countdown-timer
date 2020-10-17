@@ -412,10 +412,11 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 var calculateStateFromProps = function calculateStateFromProps(props) {
   var dateTo = props.dateTo,
+      dateFrom = props.dateFrom,
       numberOfFigures = props.numberOfFigures,
       mostSignificantFigure = props.mostSignificantFigure;
 
-  var currentDate = new Date();
+  var currentDate = dateFrom ? new Date(dateFrom) : new Date();
   var targetDate = new Date(dateTo);
   var diff = targetDate - currentDate;
   var significance = ['year', 'month', 'day', 'hour', 'min', 'sec'];
@@ -490,7 +491,7 @@ var DateCountdown = function (_Component) {
 
     var _this = _possibleConstructorReturn(this, (DateCountdown.__proto__ || Object.getPrototypeOf(DateCountdown)).call(this, props));
 
-    _this.state = {};
+    _this.state = calculateStateFromProps(props);
     _this.animateAndChangeIfNeeded = _this.animateAndChangeIfNeeded.bind(_this);
     _this.tick = _this.tick.bind(_this);
     _this.dissect = _this.dissect.bind(_this);
@@ -706,12 +707,6 @@ var DateCountdown = function (_Component) {
         })
       );
     }
-  }], [{
-    key: 'getDerivedStateFromProps',
-    value: function getDerivedStateFromProps(props) {
-      var newState = calculateStateFromProps(props);
-      return newState;
-    }
   }]);
 
   return DateCountdown;
@@ -722,6 +717,7 @@ DateCountdown.propTypes = {
   locales_plural: _propTypes2.default.array,
   // eslint-disable-next-line react/require-default-props
   dateTo: _propTypes2.default.string.isRequired,
+  dateFrom: _propTypes2.default.string,
   callback: _propTypes2.default.func,
   mostSignificantFigure: _propTypes2.default.string,
   numberOfFigures: _propTypes2.default.number,
@@ -732,6 +728,7 @@ DateCountdown.defaultProps = {
   locales: ['year', 'month', 'day', 'hour', 'minute', 'second'],
   locales_plural: ['years', 'months', 'days', 'hours', 'minutes', 'seconds'],
   dateTo: new Date().toString(),
+  dateFrom: new Date().toString(),
   callback: function callback() {
     return null;
   },

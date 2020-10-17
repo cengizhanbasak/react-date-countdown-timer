@@ -9,8 +9,13 @@ import PropTypes from 'prop-types';
 import './style.css';
 
 const calculateStateFromProps = (props) => {
-  let { dateTo, numberOfFigures, mostSignificantFigure } = props;
-  const currentDate = new Date();
+  let {
+    dateTo,
+    dateFrom,
+    numberOfFigures,
+    mostSignificantFigure
+  } = props;
+  const currentDate = dateFrom ? new Date(dateFrom) : new Date();
   const targetDate = new Date(dateTo);
   const diff = targetDate - currentDate;
   let significance = ['year', 'month', 'day', 'hour', 'min', 'sec'];
@@ -80,7 +85,7 @@ const calculateStateFromProps = (props) => {
 class DateCountdown extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = calculateStateFromProps(props);
     this.animateAndChangeIfNeeded = this.animateAndChangeIfNeeded.bind(this);
     this.tick = this.tick.bind(this);
     this.dissect = this.dissect.bind(this);
@@ -94,11 +99,6 @@ class DateCountdown extends Component {
         this.setState({ tickId });
       }
     });
-  }
-
-  static getDerivedStateFromProps(props) {
-    let newState = calculateStateFromProps(props);
-    return newState;
   }
 
   componentWillUnmount() {
@@ -263,16 +263,18 @@ DateCountdown.propTypes = {
   locales_plural: PropTypes.array,
   // eslint-disable-next-line react/require-default-props
   dateTo: PropTypes.string.isRequired,
+  dateFrom: PropTypes.string,
   callback: PropTypes.func,
   mostSignificantFigure: PropTypes.string,
   numberOfFigures: PropTypes.number,
   noAnimate: PropTypes.bool
-}
+};
 
 DateCountdown.defaultProps = {
   locales: ['year', 'month', 'day', 'hour', 'minute', 'second'],
   locales_plural: ['years', 'months', 'days', 'hours', 'minutes', 'seconds'],
   dateTo: (new Date()).toString(),
+  dateFrom: (new Date()).toString(),
   callback: () => null,
   mostSignificantFigure: 'none',
   numberOfFigures: 6,
