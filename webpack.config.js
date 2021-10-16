@@ -1,4 +1,5 @@
-var path = require('path');
+const path = require('path');
+
 module.exports = {
   entry: './src/index.js',
   output: {
@@ -8,9 +9,9 @@ module.exports = {
   },
   module: {
     rules: [
-        {
-          test: /\.css$/,
-          use: [ 'style-loader', 'css-loader' ]
+      {
+        test: /\.css$/,
+        use: ['style-loader', 'css-loader']
       },
       {
         test: /\.js$/,
@@ -19,8 +20,8 @@ module.exports = {
         use: {
           loader: 'babel-loader',
           options: {
-              presets: ['react','env'],
-              plugins: ['transform-class-properties']
+            presets: ['@babel/react', '@babel/env'],
+            plugins: ['@babel/plugin-proposal-class-properties']
           }
         }
       }
@@ -28,6 +29,6 @@ module.exports = {
     ]
   },
   externals: {
-    'react': 'commonjs react'
+    react: 'commonjs react'
   }
 };
