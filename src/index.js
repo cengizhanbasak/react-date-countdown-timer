@@ -89,6 +89,14 @@ class DateCountdown extends Component {
     this.animateAndChangeIfNeeded = this.animateAndChangeIfNeeded.bind(this);
     this.tick = this.tick.bind(this);
     this.dissect = this.dissect.bind(this);
+    this.figuresMax = {
+      year: Number.MAX_SAFE_INTEGER,
+      month: 12,
+      day: 30,
+      hour: 24,
+      min: 60,
+      sec: 60,
+    };
   }
 
   componentDidMount() {
@@ -124,7 +132,7 @@ class DateCountdown extends Component {
               if (!noAnimate) digits[i].classList.toggle('odometerStart');
               if (prevUnit !== 'none') {
                 let newState = {};
-                newState[prevUnit] = 59;
+                newState[prevUnit] = this.figuresMax[prevUnit] - 1;
                 newState[unit] = state[unit] - 1;
                 this.setState(newState);
               }
@@ -147,7 +155,7 @@ class DateCountdown extends Component {
                 if (!noAnimate) digits[i].classList.toggle('odometerStart');
                 if (prevUnit !== 'none') {
                   let newState = {};
-                  newState[prevUnit] = 59;
+                  newState[prevUnit] = this.figuresMax[prevUnit] - 1;
                   newState[unit] = state[unit] - 1;
                   this.setState(newState);
                 }
