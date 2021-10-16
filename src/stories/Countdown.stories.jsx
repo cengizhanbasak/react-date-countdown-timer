@@ -29,8 +29,17 @@ TimesUp.args = {
 export const Static = Template.bind({});
 Static.args = {
   callback: () => console.log('Time\'s up!'),
-  dateTo: '2010',
-  mostSignificantFigure: 'none',
-  numberOfFigures: 6,
-  dateFrom: '2000'
+  dateTo: '10/18/2021 10:30:58',
+  mostSignificantFigure: 'day',
+  numberOfFigures: 4,
+  dateFrom: '10/16/2021 10:30:52',
+};
+
+export const AlmostDone = Template.bind({});
+AlmostDone.args = {
+  callback: () => console.log('Time\'s up!'),
+  dateTo: '10/18/2021 10:30:55',
+  mostSignificantFigure: 'day',
+  numberOfFigures: 4,
+  dateFrom: '10/18/2021 10:30:50',
 };

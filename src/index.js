@@ -92,8 +92,9 @@ class DateCountdown extends Component {
   }
 
   componentDidMount() {
-    const { diff } = this.state;
-    this.setState(calculateStateFromProps(this.props), () => {
+    const state = calculateStateFromProps(this.props);
+    const { diff } = state;
+    this.setState(state, () => {
       if (diff > 0) {
         let tickId = setInterval(this.tick, 1000);
         this.setState({ tickId });
@@ -133,9 +134,7 @@ class DateCountdown extends Component {
         } else {
           let allZeros = true;
           for (let j = i + 1; j < digits.length; j += 1) {
-            if (digits[j].innerHTML === '0') {
-              allZeros = true;
-            } else {
+            if (digits[j].innerHTML !== '0') {
               allZeros = false;
               break;
             }
@@ -172,10 +171,11 @@ class DateCountdown extends Component {
       tickId
     } = this.state;
     const { callback } = this.props;
-    this.setState({ sec: sec - 1 });
+    const newSec = sec - 1;
+    this.setState({ sec: newSec });
     this.animateAndChangeIfNeeded('sec', 'none');
 
-    if (sec === 0) {
+    if (newSec === 0) {
       this.animateAndChangeIfNeeded('min', 'sec');
 
       if (min === 0) {
@@ -225,8 +225,10 @@ class DateCountdown extends Component {
               if (significance.indexOf(unit) !== -1) {
                 return (
                   <span key={key}>
-                    0
+                    00
+                    {' '}
                     {locales[key]}
+                    {' '}
                   </span>
                 );
               }
