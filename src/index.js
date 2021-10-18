@@ -68,7 +68,6 @@ const calculateStateFromProps = (props) => {
     sec += min * 60;
     min = 0;
   }
-  if (diff <= 0) props.callback();
   return {
     speed: 250,
     diff,
@@ -85,7 +84,11 @@ const calculateStateFromProps = (props) => {
 class DateCountdown extends Component {
   constructor(props) {
     super(props);
-    this.state = calculateStateFromProps(props);
+    const state = calculateStateFromProps(props);
+    this.state = state;
+    if (state.diff <= 0) {
+      props.callback();
+    }
     this.animateAndChangeIfNeeded = this.animateAndChangeIfNeeded.bind(this);
     this.tick = this.tick.bind(this);
     this.dissect = this.dissect.bind(this);
